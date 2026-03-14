@@ -1,0 +1,212 @@
+{
+  "name": "Tugas2",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "014465b9-99df-4840-95b3-1c0f6df3717b",
+      "name": "Telegram Trigger",
+      "webhookId": "1772c4fa-2f12-4c7d-bbdb-3b3c3403b5d2",
+      "credentials": {
+        "telegramApi": {
+          "id": "Mvr828mOoUWSLx11",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "Berikan jawaban sesuai dengan tool “Get row(s) in sheet in \nGoogle Sheets”"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "98edd70c-12cf-4d0b-96bd-4b31519099a0",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        544,
+        0
+      ],
+      "id": "f2137eaf-118f-497a-b765-dd93a8fa7a3c",
+      "name": "Send a text message",
+      "webhookId": "afc2a7ff-a134-4824-bac9-5e1256bbaefd",
+      "credentials": {
+        "telegramApi": {
+          "id": "Mvr828mOoUWSLx11",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        160,
+        224
+      ],
+      "id": "88865ed8-91aa-48c7-a503-cbca7505549d",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "srWF6Zfaj53NFvCA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1jGupBkkhJcyoq00V4aEtjC9nz4PzT9UHj0GUVw641xA",
+          "mode": "list",
+          "cachedResultName": "n8n 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jGupBkkhJcyoq00V4aEtjC9nz4PzT9UHj0GUVw641xA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jGupBkkhJcyoq00V4aEtjC9nz4PzT9UHj0GUVw641xA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        416,
+        208
+      ],
+      "id": "989c6362-5f40-41ae-910a-b6d6e3050bb7",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "91ERI8Z1Bplaa99F",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 198819661,
+          "message": {
+            "message_id": 33,
+            "from": {
+              "id": 5138131873,
+              "is_bot": false,
+              "first_name": "Rina",
+              "last_name": "Harahap",
+              "username": "Rinaharahap01",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 5138131873,
+              "first_name": "Rina",
+              "last_name": "Harahap",
+              "username": "Rinaharahap01",
+              "type": "private"
+            },
+            "date": 1773460474,
+            "text": "shet"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "1ab47050-2aa5-4676-ba99-23a21e10408d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "35b1e97969af309403147534477fe6074bc2730421e18565c2aaf65f56dc990d"
+  },
+  "id": "qZtw3CVkZ7yPd9RE",
+  "tags": []
+}
